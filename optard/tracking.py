@@ -2,6 +2,9 @@ import numpy as np
 from filterpy.kalman import KalmanFilter
 
 
+# FIXME: values in get_* require tuning.
+
+
 def get_F():
     """
     State transition matrix F: 
@@ -23,8 +26,8 @@ def get_Q():
     return np.asarray([
         [1., 0, 0, 0],
         [0, 1., 0, 0],
-        [0, 0, 1., 0],
-        [0, 0, 0, 1.]
+        [0, 0, 10., 0],
+        [0, 0, 0, 10.]
     ], dtype=np.float32)
 
 
