@@ -2,7 +2,13 @@
 
 ![gif](media/video/test_00-result.gif)
 
-Simple target point detection (and tracking as `#TODO`) using template with ArUco markers (see image [here](media/images/template.png)).
+Simple target point detection using template with ArUco markers.
+
+Contains:
+* Template with ArUco markers creation (see image [here](media/images/template.png))
+* Template detection (using OpenCV-contib `aruco` module)
+* Template center (`target`) position estimation using `findHomography()`
+* KalmanFilter-based point tracking
 
 ### Requirements
 ```

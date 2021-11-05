@@ -18,16 +18,16 @@ def get_F():
     ], dtype=np.float32)
 
 
-def get_Q():
+def get_Q(std_pos=1., std_vel=10.):
     """
     State transition error covariance matrix Q: 
     State_{i+1} = F @ State_{i} + w_{i+1}, w ~ N(0, Q). 
     """
     return np.asarray([
-        [1., 0, 0, 0],
-        [0, 1., 0, 0],
-        [0, 0, 10., 0],
-        [0, 0, 0, 10.]
+        [std_pos, 0, 0, 0],
+        [0, std_pos, 0, 0],
+        [0, 0, std_vel, 0],
+        [0, 0, 0, std_vel]
     ], dtype=np.float32)
 
 
@@ -42,44 +42,43 @@ def get_H():
     ], dtype=np.float32)
 
 
-def get_R():
+def get_R(std_pos=1.):
     """
-    Measurement error covarianve matrix R:
+    Measurement error covariance matrix R:
     z_{i} = H @ Measurement_{i} + v, v ~ N(0, R).
     """
     return np.asarray([
-        [1., 0],
-        [0, 1.]
+        [std_pos, 0],
+        [0, std_pos]
     ], dtype=np.float32)
 
 
-def get_P():
+def get_P(std_pos=10., std_vel=1000.):
     """
     Initial state covariance matrix P.
     """
     return np.asarray([
-        [10, 0, 0, 0],
-        [0, 10, 0, 0],
-        [0, 0, 1000, 0],
-        [0, 0, 0, 1000]
+        [std_pos, 0, 0, 0],
+        [0, std_pos, 0, 0],
+        [0, 0, std_vel, 0],
+        [0, 0, 0, std_vel]
     ], dtype=np.float32)
 
 
-def init_kalman_filter():
-    kf = KalmanFilter(dim_x=4, dim_z=2)
-    # Measurement is [x, y] (len = 2)
-    # State is [x, y, x', y'] (len = 4)
- 
-    kf.F = get_F()
-    kf.Q = get_Q()
-    kf.H = get_H()
-    kf.R = get_R()
-    kf.P = get_P()
-    return kf
-
 class PointKalmanFilter:
-    def __init__(self):
-        self.kf = init_kalman_filter()
+    def __init__(self,
+                 trans_err_std_pos=1., trans_err_std_vel=10.,
+                 measure_err_std_pos=.1,
+                 init_state_std_pos=10., init_state_std_vel=1000.):
+        # Measurement is [x, y] (len = 2)
+        # State is [x, y, x', y'] (len = 4)
+        kf = KalmanFilter(dim_x=4, dim_z=2)
+        kf.F = get_F()
+        kf.Q = get_Q(trans_err_std_pos, trans_err_std_vel)
+        kf.H = get_H()
+        kf.R = get_R(measure_err_std_pos)
+        kf.P = get_P(init_state_std_pos, init_state_std_vel)
+        self.kf = kf
 
     def update(self, z=None):
         self.kf.predict()
