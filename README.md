@@ -1,5 +1,7 @@
 # Optical target detection
 
+![gif](media/video/test_00-result.gif)
+
 Simple target point detection (and tracking as `#TODO`) using template with ArUco markers (see image [here](media/images/template.png)).
 
 ### Requirements

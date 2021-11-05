@@ -1,4 +1,5 @@
 import cv2
+import tqdm
 from argparse import ArgumentParser
 
 import os
@@ -23,20 +24,24 @@ def main(args):
     reader = cv2.VideoCapture(args.input_filename)
     fps = int(round(reader.get(cv2.CAP_PROP_FPS)))
     num_frames = int(reader.get(cv2.CAP_PROP_FRAME_COUNT))
-    h = int(reader.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    w = int(reader.get(cv2.CAP_PROP_FRAME_WIDTH))
 
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(args.output_filename, fourcc, fps, (w, h))
-
-    for i in range(num_frames):
+    writer = None
+    for i in tqdm.trange(num_frames):
         _, image = reader.read()
         corners, ids = detector.run(image)
         target_position = compute_target_position_with_perspective(corners, ids)
+
         image = show(image, corners, ids, target_position, fps=fps)
-        writer.write(image)
+
+        if i == 0 and args.output_filename is not None:
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            writer = cv2.VideoWriter(args.output_filename, fourcc, fps, image.shape[:2][::-1])
+            
+        if writer is not None:
+            writer.write(image)
     
-    writer.release()
+    if writer is not None:
+        writer.release()
 
 
 if __name__ == "__main__":
