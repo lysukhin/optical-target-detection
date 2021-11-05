@@ -29,7 +29,10 @@ def show(image, corners, ids, target_position=None, max_height=480, fps=0):
 
     cv2.aruco.drawDetectedMarkers(image, corners, ids)
     if target_position is not None:
-        image[-preview_size:, -preview_size:] = cv2.resize(crop, dsize=(preview_size, preview_size))
+        try:
+            image[-preview_size:, -preview_size:] = cv2.resize(crop, dsize=(preview_size, preview_size))
+        except cv2.error as e:
+            print(f"cv2.error: {e}")
 
     cv2.imshow("results", image)
     if fps > 0:
