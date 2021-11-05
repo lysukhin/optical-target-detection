@@ -1,3 +1,7 @@
+"""
+https://docs.opencv.org/master/d5/dae/tutorial_aruco_detection.html
+https://www.pyimagesearch.com/2020/12/21/detecting-aruco-markers-with-opencv-and-python/
+"""
 import cv2
 import numpy as np
 
