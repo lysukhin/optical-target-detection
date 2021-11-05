@@ -30,3 +30,5 @@ def show(image, corners, ids, target_position=None, max_height=480, fps=0):
         cv2.waitKey(1000 // fps)
     else:
         cv2.waitKey()
+    
+    return image
