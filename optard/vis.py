@@ -3,6 +3,7 @@ import cv2
 
 crop_size = 100
 preview_size = 200
+info_pos = (0.2, 0.1)
 
 
 def show(image, corners, ids, target_position=None, max_height=480, fps=0):
@@ -21,6 +22,11 @@ def show(image, corners, ids, target_position=None, max_height=480, fps=0):
         x, y = target_position
         crop = image[y - crop_size // 2: y + crop_size // 2, x - crop_size // 2: x + crop_size // 2].copy()
         
+        text_pos = (int(info_pos[0] * w * k), int(info_pos[1] * h * k))
+        text = f"Target: x = {x:4d}, y = {y:4d}"
+        cv2.putText(image, text, text_pos, cv2.FONT_HERSHEY_DUPLEX, 1, (64, 255, 255), 1)
+
+
     cv2.aruco.drawDetectedMarkers(image, corners, ids)
     if target_position is not None:
         image[-preview_size:, -preview_size:] = cv2.resize(crop, dsize=(preview_size, preview_size))
