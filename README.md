@@ -6,7 +6,7 @@ Simple target point detection (and tracking as `#TODO`) using template with ArUc
 
 ### Requirements
 ```
-pip install numpy opencv-python opencv-contrib-python tqdm
+pip install numpy opencv-python opencv-contrib-python tqdm filterpy
 ```
 
 

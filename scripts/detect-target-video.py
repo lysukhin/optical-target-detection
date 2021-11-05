@@ -7,6 +7,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), os.path.pardir))
 from optard.aruco import ArucoTagsDetector
 from optard.detection import compute_target_position_with_perspective
+from optard.tracking import PointKalmanFilter
 from optard.vis import show
 
 
@@ -20,6 +21,7 @@ def parse_arguments():
 
 def main(args):
     detector = ArucoTagsDetector()
+    tracker = PointKalmanFilter()
 
     reader = cv2.VideoCapture(args.input_filename)
     fps = int(round(reader.get(cv2.CAP_PROP_FPS)))
@@ -29,7 +31,9 @@ def main(args):
     for i in tqdm.trange(num_frames):
         _, image = reader.read()
         corners, ids = detector.run(image)
+        
         target_position = compute_target_position_with_perspective(corners, ids)
+        target_position = tracker.update(target_position)
 
         image = show(image, corners, ids, target_position, fps=fps)
 
